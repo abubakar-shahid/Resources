@@ -1,0 +1,98 @@
+--------GO
+--------create trigger to_del
+--------on Students
+--------instead of delete
+--------as 
+--------print '“You don’t have the permission to delete the student"'
+
+
+--------select*from students;
+------delete from students where [Name]='Ali'
+
+
+--------2
+------GO
+------create trigger to_de1_c
+------on courses
+------instead of insert
+------as 
+------print '“You don’t have the permission to insert the course"'
+
+----INSERT [dbo].[Courses] ([CourseID], [CourseName], [PrerequiteCourseID],CreditHours)
+----VALUES (50, N'ICT Systems', 10, 3)
+----select*from courses;
+
+------3
+----Create table Notify(
+----Notificationid int identity(1,1),
+----Studentid varchar(7) foreign key  references Students(Rollno),
+----Notification_string varchar(255)
+----);
+-- --alter trigger rstatus
+-- -- on Registration 
+-- --after insert 
+-- --as
+-- -- declare @rn varchar(7)
+-- -- declare @rn1 varchar(7)
+-- -- select @rn1=rollnumber from inserted
+-- -- select @rn=r.RollNumber from inserted r  join Semester s on r.Semester=s.Semester 
+-- -- join Courses_Semester cs on r.CourseID=cs.CourseID
+-- -- where s.Status=N'Complete' and cs.AvailableSeats>0;
+-- -- IF(@rn is null)
+-- --   INSERT INTO Notify (StudentID, Notification_String)
+-- --   VALUES (@rn1, 'Registration unsuccessful for course');
+-- -- ELSE
+-- --   INSERT INTO Notify (StudentID, Notification_String)
+-- --   VALUES (@rn, 'Registration successful for course');
+----INSERT [dbo].[Registration] ([Semester], [RollNumber], [CourseID], [Section],GPA)//for fall2016
+----VALUES (N'Fall2016', N'7', 40, N'A', 3.3)
+----INSERT [dbo].[Registration] ([Semester], [RollNumber], [CourseID], [Section],GPA)//for spring2017
+----VALUES (N'Spring2017', N'7', 40, N'A', 3.3)
+-- select*from notify;
+-- select *from registration;
+
+--4
+--go
+--alter trigger rg_in_c
+--on registration
+--instead of insert
+--as
+--begin
+--declare @check varchar(7)
+--declare @Sem varchar(15)
+--select @sem=Semester from inserted
+--declare @RN  varchar(7)
+--select @RN=Rollnumber from inserted
+--declare @CID int
+--select @CID =CourseID from inserted
+--declare @Sect varchar(1)
+--select @sect=section from inserted
+--declare @G_P_A float
+--select @G_P_A=gpa from inserted
+--select @check=r.rollnumber from inserted r join ChallanForm cf on r.RollNumber=cf.RollNumber and 
+--cf.TotalDues>20000
+--   if(@check is not null)
+--       print 'you cannot be enrolled'
+--   else 
+--       INSERT [dbo].[Registration] ([Semester], [RollNumber], [CourseID], [Section],GPA) 
+--	   VALUES (@sem, @RN,@CID,@Sect,@G_P_A)
+--end
+iNSERT [dbo].[Registration] ([Semester], [RollNumber], [CourseID], [Section],GPA) --shouldnotbeinserted
+VALUES (N'Fall2016', N'1', 20, N'C', 3.5)
+iNSERT [dbo].[Registration] ([Semester], [RollNumber], [CourseID], [Section],GPA) --willbeinserted
+VALUES (N'Fall2016', N'8', 20, N'C', 3.5)
+select *from Registration
+
+
+
+
+
+
+
+
+
+
+
+
+
+

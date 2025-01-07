@@ -1,0 +1,114 @@
+the code ensures that only one roommate enters their critical section at a time and prevents both from buying milk simultaneously. However, as previously
+mentioned, the code lacks proper synchronization mechanisms and still doesn't fully satisfy the formal requirements of the critical section problem. It relies
+on informal synchronization conditions and busy-waiting, which can lead to issues in complex scenarios and doesn't guarantee fairness and bounded waiting.
+In certain situations, one of the roommates may have the opportunity to purchase milk repeatedly while the other is kept waiting indefinitely. Fairness is a key
+requirement in the critical section problem to ensure that all processes have a chance to access the critical section. Although the code is designed to prevent
+simultaneous access to the critical section, it doesn't eliminate the possibility of race conditions entirely. While the "NoteA" and "NoteB" flags are used to
+coordinate access, a race condition can occur when both roommates set their respective flags to TRUE simultaneously and enter the critical section at the same time.
+This scenario requires an additional check to ensure mutual exclusion.
+
+Semaphore mutex = 1;
+Semaphore roommatesReady = 0;
+
+// Roommate A
+while (true) {
+    // Enter the critical section
+    wait(mutex);
+    if (NoMilk) {
+        BuyMilk();
+    }
+    // Exit the critical section
+    signal(mutex);
+    // Signal that A is ready
+    signal(roommatesReady);
+}
+
+// Roommate B
+while (true) {
+    // Enter the critical section
+    wait(mutex);
+    if (NoMilk) {
+        BuyMilk();
+    }
+    // Exit the critical section
+    signal(mutex);
+    // Signal that B is ready
+    signal(roommatesReady);
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+using namespace std;
+#define NTHREADS 8
+void *helloWorld(void *threadid)
+{
+        long tid;
+        tid = (long)threadid;
+        cout << "Hello world! Function calling, 00" << tid << endl;
+        pthread_exit(NULL);
+}
+int main ()
+{
+        pthread_t threads[NTHREADS];
+        for( int i=0; i < NTHREADS; i++ )
+        {
+                cout << "main: creating thread 00" << i << endl;
+                pthread_create(&threads[i], NULL, helloWorld, (void*)(intptr_t) i);
+                void *status;
+                pthread_join(threads[i], &status);
+        }
+        pthread_exit(NULL);
+}
+--------------------------------------------------------------------------------------------------------------------------
+using namespace std;
+#define NTHREADS 8
+void *helloWorld(void *threadid)
+{
+        long tid;
+        tid = (long)threadid;
+        cout << "Hello world! Function calling, 00" << tid << endl;
+        pthread_exit(NULL);
+}
+int main ()
+{
+        pthread_t threads[NTHREADS];
+        for( int i=0; i < NTHREADS; i++ )
+        {
+                cout << "main: creating thread 00" << i << endl;
+                pthread_create(&threads[i], NULL, helloWorld, (void*)(intptr_t) i);
+        }
+        for(int i=0; i < NTHREADS; i++ )
+        {
+                void *status;
+                pthread_join(threads[i], &status);
+        }
+        pthread_exit(NULL);
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+void Function1(int i, int j, int n) {
+        boolean key;
+        while (TRUE) {
+                waiting[i] = TRUE;
+                key = TRUE;
+                while (waiting[i] && key)
+                {
+                        key = test-and-set (&lock);
+                }
+                waiting[i] = FALSE;
+
+                {         // CRITICAL SECTION        }
+
+                j = (i + 1) % n;
+                while ( (j != i) && !waiting[j] )
+                {
+                        j = (j + 1) % n;
+                }
+                if (j == i){
+                        lock = FALSE;
+                }
+                else{
+                        waiting[j] = FALSE;
+                }
+
+                {        // REMAINDER SECTION        }
+        }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

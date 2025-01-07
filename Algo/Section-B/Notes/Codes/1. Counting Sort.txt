@@ -1,0 +1,22 @@
+function countingSort(array, k):
+    count = array of size (k+1) initialized to 0
+
+    // Count the occurrences of each element
+    for i from 0 to length(array) - 1:
+        count[array[i]] = count[array[i]] + 1
+
+    // Modify the count array such that each element at index i contains the sum of previous counts
+    for i from 1 to k:
+        count[i] = count[i] + count[i - 1]
+
+    // Output array to store the sorted order
+    output = array of size length(array)
+
+    // Build the output array
+    for i from length(array) - 1 downto 0:
+        output[count[array[i]] - 1] = array[i]
+        count[array[i]] = count[array[i]] - 1
+
+    // Copy the sorted elements into the original array
+    for i from 0 to length(array) - 1:
+        array[i] = output[i]

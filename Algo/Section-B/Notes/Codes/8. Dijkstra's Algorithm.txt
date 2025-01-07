@@ -1,0 +1,15 @@
+function dijkstra(graph, source):
+    dist = array of size length(graph) initialized to infinity
+    dist[source] = 0
+    priorityQueue = priority queue initialized with (source, 0)
+
+    while priorityQueue is not empty:
+        (u, d) = extractMin(priorityQueue)
+
+        for each neighbor v of u:
+            alt = dist[u] + weight(u, v)
+            if alt < dist[v]:
+                dist[v] = alt
+                decreaseKey(priorityQueue, v, alt)
+
+    return dist

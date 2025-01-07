@@ -1,0 +1,30 @@
+function radixSort(array, d):
+    // d is the number of digits in the largest number
+    for i from 1 to d:
+        array = countingSortByDigit(array, i)
+
+function countingSortByDigit(array, digit):
+    // Perform a counting sort based on the digit at position 'digit'
+    count = array of size 10 initialized to 0
+    output = array of size length(array)
+
+    // Count occurrences of each digit
+    for i from 0 to length(array) - 1:
+        digitValue = getDigit(array[i], digit)
+        count[digitValue] = count[digitValue] + 1
+
+    // Modify count array
+    for i from 1 to 9:
+        count[i] = count[i] + count[i - 1]
+
+    // Build the output array
+    for i from length(array) - 1 downto 0:
+        digitValue = getDigit(array[i], digit)
+        output[count[digitValue] - 1] = array[i]
+        count[digitValue] = count[digitValue] - 1
+
+    return output
+
+function getDigit(number, digit):
+    // Return the digit at the 'digit' position
+    return (number // 10^(digit - 1)) % 10

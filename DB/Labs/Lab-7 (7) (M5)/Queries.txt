@@ -1,0 +1,65 @@
+----------------------------------------------------------------------(Printing All Data)----------------------------------------------------------------------
+select * from Orders;
+select * from OrderDetails;
+select * from Items;
+select * from Customers;
+----------------------------------------------------------------------(Queries for Views)----------------------------------------------------------------------
+Task # 1
+create view showOrders as
+select OrderDetails.OrderNo, Items.ItemNo, (Items.Price * OrderDetails.Quantity) as Price
+from OrderDetails join Items on OrderDetails.ItemNo = Items.ItemNo;
+select * from showOrders;
+
+Task # 2
+create view showItems
+select OrderDetails.ItemNo, sum(OrderDetails.Quantity) as [Total Sale]
+from OrderDetails group by OrderDetails.ItemNo having sum(OrderDetails.Quantity)>20;
+select * from showItems;
+
+Task # 3
+create view StarCustomers as
+select orders.customerNo from orders join orderdetails on orders.orderno=orderdetails.orderno
+join items on orderdetails.itemno=items.itemno and 
+orders.total_items_ordered * items.price>2000 group by orders.CustomerNo;
+select * from StarCustomers;
+
+Task # 4
+create view withoutWithCheck as
+select CustomerNo from Customers where Phone is not null;
+select * from withoutWithCheck;
+
+create view withCheck as
+select Customers.* from Customers where Phone is not null
+with check option;
+select * from withCheck;
+----------------------------------------------------------------------(Queries for Stored Procedures)----------------------------------------------------------------------
+Task # 1
+create procedure QuantityCheck @order_num int, @item_num int, @ordered_quantity int AS
+declare @temp int
+select temp = [Quantity in Store] from Items
+    if @temp < @ordered_quantity
+	    select 'Only' + @temp + 'is present, which is less than your required quantity.' as msg
+	else
+	    insert into OrderDetails values(@order_num, @item_num, @ordered_quantity)
+		update Items set [Quantity in Store] = [Quantity in Store] - @temp where ItemNo = @item_num;
+
+Task # 2
+create procedure CancelOrder @cust_num varchar(2), @order_num int AS
+declare @temp_ord_num int, @temp_cust_name varchar(30)
+select temp_ord_num = OrderNo from Orders where CustomerNo = @cust_num
+select @temp_cust_name = Name from Customers where CustomerNo = @cust_num
+    if @temp_ord_num != @order_num
+	    select 'Order number' + @order_num + 'is not of' + @cust_num + ',' + @temp_cust_name
+    else
+	    delete from OrderDetails where OrderNo = @order_num
+		delete from Orders where OrderNo = @order_num
+
+Task # 3
+create procedure ShowPoints @cust_name varchar(30) AS
+declare @cust_id varchar(2)
+select @cust_id = CustomerNo from Customers where Name = @cust_name
+select Customers.Name, Customers.CustomerNo, Orders.OrderNo, (sum(Items.Price * OrderDetails.Quantity))/100 as Points
+from OrderDetails join Items on OrderDetails.ItemNo = Items.ItemNo
+join Orders on Orders.OrderNo = OrderDetails.OrderNo join Customers on Customers.CustomerNo = Orders.CustomerNo
+group by OrderDetails.OrderNo, Orders.CustomerNo, Orders.OrderNo, Customers.CustomerNo, Customers.Name
+having Orders.CustomerNo = @cust_id;

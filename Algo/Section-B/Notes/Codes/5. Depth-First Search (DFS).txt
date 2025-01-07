@@ -1,0 +1,13 @@
+function DFS(graph, start):
+    visited = empty set
+    stack = empty stack
+    push stack with start
+
+    while stack is not empty:
+        vertex = pop stack
+        if vertex is not in visited:
+            visit(vertex)
+            add vertex to visited
+            for each neighbor of vertex in graph:
+                if neighbor is not in visited:
+                    push stack with neighbor

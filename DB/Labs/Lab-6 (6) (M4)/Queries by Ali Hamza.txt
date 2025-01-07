@@ -1,0 +1,53 @@
+Task # 1
+select FollowerUserName  from Following
+where FollowerUserName in
+(select  Top 1 FollowedUserName  from Following
+group by FollowedUserName order by  count(FollowedUserName)  desc);
+
+Task # 2
+select Top 1 FollowerUserName from Following
+where FollowerUserName IN (select Top 2 FollowedUserName from Following
+group by FollowedUserName Order by count(FollowedUserName) desc) order by FollowedUserName asc;
+
+Task # 3
+select Users.UserName from Users left join Tweets
+on Users.UserName = Tweets.UserName
+where Tweets.TweetID is null;
+
+Task # 4
+select Hashtag, UserName, count(*) number_of_times
+from (Tweets inner join Hashtags on charindex(Hashtags.Hashtag,Tweets.text,1) != 0)
+group by UserName, Hashtag;
+
+Task # 5
+select UserName from Users where UserName IN
+(select UserName from Tweets inner join Hashtags
+on charindex(Hashtags.Hashtag,Tweets.text,1) != 0
+where Hashtag != '#Census' group by UserName,Hashtag);
+
+Task # 6
+select UserName from Users
+Except(select distinct FollowedUserName from Following);
+
+Task # 7
+select top 1 Description as Most_Common from Interests inner join UserInterests
+on Interests.InterestID = UserInterests.InterestID
+group by description order by count(Interests.description) desc;
+select description as Least_Common from (Tweets inner join Interests
+on charindex(Interests.Description,Tweets.text,1) != 0)
+group by Description;
+
+Task # 8
+select Users.Country, count(*) as tweets from(Users inner join Tweets
+on Users.UserName = Tweets.UserName)
+group by Users.Country order by Users.Country;
+
+Task # 9
+select UserName from Tweets group by UserName
+having count(UserName)>(select avg(COUNTER1) as avg1 from
+(select count(T1.UserName) as COUNTER1 from Tweets as T1 group by T1.UserName) as T);
+
+Task # 10
+select UserName from Users where UserName in
+(select distinct FollowedUserName from Following inner join Users
+on FollowedUserName = UserName where country ='Pakistan');

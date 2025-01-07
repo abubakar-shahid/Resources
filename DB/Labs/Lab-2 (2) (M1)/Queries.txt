@@ -1,0 +1,76 @@
+--------------------------------------------------(Task # 1)--------------------------------------------------
+Create Table Student(
+RollNo varchar(255) not null,
+Name varchar(255) not null,
+Gender varchar(255) not null,
+PhoneNo varchar(255) not null
+)
+
+insert into Student values ('L164123', 'Ali Ahmad', 'Male', '0333-3333333'),
+('L164124', 'Rafia Ahmad', 'Female', '0333-3456789'),
+('L164125', 'Basit Junaid', 'Male', '0333-3243567')
+
+create table Attendance(
+RollNo varchar(255) not null,
+Date_ date not null,
+Status_ varchar(255) not null,
+ClassVanue varchar(255) not null
+)
+
+insert into Attendance values ('L164123', '2-22-2016', 'P', '2'),
+('L164124', '2-23-2016', 'A', '1'),
+('L164125', '3-4-2016', 'P', '2')
+
+create table ClassVanue(
+ID int,
+Building varchar(255) not null,
+RoomNo varchar(255) not null,
+Teacher varchar(255) not null
+)
+
+insert into ClassVanue values ('1', 'CS', '2', 'Sarim Baig'),
+('2', 'Civil', '7', 'Bismillah Baig')
+
+create table Teacher(
+Name varchar(255) not null,
+Designation varchar(255) not null,
+Department varchar(255) not null
+)
+
+insert into Teacher values ('Sarim Baig', 'Assistant Professor', 'Computer Science'),
+('Bismillah Jan', 'Lecturer', 'Civil Engineering'),
+('Kashif Raza', 'Professor', 'Electrical Engieering')
+
+--------------------------------------------------(Task # 2)--------------------------------------------------
+alter table Student
+add primary key(RollNo);
+
+alter table Attendance
+add primary key(RollNo);
+
+alter table ClassVaue
+add primary key(ID);
+
+alter table Teacher
+add primary key(name);
+
+--------------------------------------------------(Task # 3)--------------------------------------------------
+alter table Attendance
+add foreign key(RollNo) references Student(RollNo);
+
+alter table ClassVanue
+add foreign key(Teacher) references Teacher(Name);
+
+--------------------------------------------------(Task # 4)--------------------------------------------------
+
+
+--------------------------------------------------(Task # 5)--------------------------------------------------
+
+
+
+
+
+
+
+
+

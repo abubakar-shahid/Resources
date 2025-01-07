@@ -1,0 +1,51 @@
+----------------------------------------------------------------------------------------------------(Task-1)----------------------------------------------------------------------------------------------------
+select Departments.DEPT_ID, Departments.DEPT_NAME from Departments where
+(select min(Employees.salary) from Employees where Employees.DEPT_ID = Departments.DEPT_ID) >
+(select max(Employees.salary) from Employees where Employees.DEPT_ID = '10');
+
+----------------------------------------------------------------------------------------------------(Task-2)----------------------------------------------------------------------------------------------------
+select * from Employees where DEPT_ID != 10 and SALARY in
+(select SALARY from Employees where DEPT_ID = '10');
+
+----------------------------------------------------------------------------------------------------(Task-3)----------------------------------------------------------------------------------------------------
+select * from Employees where SALARY < 
+(select min(SALARY) from Employees where DEPT_ID = '10' group by DEPT_ID);
+
+select * from Employees as E1
+where exists (select * from Employees as E2 where E2.SALARY < E1.SALARY and E2.DEPT_ID=10);
+
+----------------------------------------------------------------------------------------------------(Task-4)----------------------------------------------------------------------------------------------------
+select * from Employees where SALARY < 
+(select min(SALARY) from Employees where DEPT_ID = '10' group by DEPT_ID);
+
+select * from Employees E1
+where not exists (select * from Employees E2 where E2.SALARY > E1.SALARY and E2.DEPT_ID=10);
+
+----------------------------------------------------------------------------------------------------(Task-5)----------------------------------------------------------------------------------------------------
+select * from Employees where
+MGR in (select MGR from Employees where EMP_ID in ('200','121')) and
+DEPT_ID in (select DEPT_ID from Employees where EMP_ID in ('200','121'));
+
+----------------------------------------------------------------------------------------------------(Task-6)----------------------------------------------------------------------------------------------------
+select Departments.DEPT_NAME from Departments
+join Employees on Departments.DEPT_ID = Employees.DEPT_ID
+where Employees.EMP_ID = '200';
+
+----------------------------------------------------------------------------------------------------(Task-7)----------------------------------------------------------------------------------------------------
+select * from Employees where SALARY in
+(select max(SALARY) from Employees where JOB = 'SA_REP' group by JOB);
+
+select * from Employees where JOB = 'SA_REP' order by SALARY desc limit 1;
+
+----------------------------------------------------------------------------------------------------(Task-8)----------------------------------------------------------------------------------------------------
+select distinct JOB from Employees;
+
+----------------------------------------------------------------------------------------------------(Task-9)----------------------------------------------------------------------------------------------------
+select distinct JOB from Employees
+where JOB not in (select distinct JOB from Employees);
+
+----------------------------------------------------------------------------------------------------(Task-10)---------------------------------------------------------------------------------------------------
+select top 1 SALARY from Employees where SALARY in (
+select top 3 SALARY from Employees group by SALARY order by SALARY desc) order by SALARY asc;
+
+select SALARY from Employees order by salary desc limit 2,1;

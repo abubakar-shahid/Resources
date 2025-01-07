@@ -1,0 +1,120 @@
+CREATE DATABASE lab
+USE lab
+GO
+
+Create Table Department
+(
+    dept_id int primary key, 
+    [name] varchar(50) 
+)
+Create Table Student
+(
+    roll_no varchar(9) primary key,
+    [name] varchar(50), 
+    dept_id int foreign key references DEPARTMENT(dept_id), 
+    batch int
+)
+Create Table Course
+(
+    course_id int primary key, 
+    [name] varchar(50), 
+    credit_hrs Int, 
+    dept_id int foreign key references DEPARTMENT(dept_id)
+)
+Create Table Section
+(
+    section_id Int Primary Key, 
+    course_id INT FOREIGN KEY REFERENCES COURSE(course_id), 
+    capacity INT
+)
+Create Table Enrolled
+(
+    student_roll_no varchar(9) FOREIGN KEY REFERENCES STUDENT(roll_no), 
+    section_id INT FOREIGN KEY REFERENCES SECTION(section_id)
+    PRIMARY KEY(student_roll_no)
+)
+Create Table Faculty
+(
+  faculty_id INT PRIMARY KEY, 
+  name VARCHAR(50), 
+  dept_id INT FOREIGN KEY REFERENCES DEPARTMENT(dept_id)
+)
+
+SELECT * FROM Student
+SELECT * FROM Course
+SELECT * FROM Section
+SELECT * FROM Enrolled
+SELECT * FROM Faculty
+SELECT * FROM Department
+
+--Question1
+Create Table AUDITING
+(
+  audit_id int IDENTITY(1,1) PRIMARY KEY,
+  Last_change_on date
+)
+
+CREATE TRIGGER T1 ON Student FOR UPDATE,INSERT,DELETE AS
+Begin
+INSERT INTO AUDITING VALUES(GETDATE())
+End
+
+CREATE TRIGGER T2 ON Department FOR UPDATE,INSERT,DELETE AS 
+Begin
+INSERT INTO AUDITING VALUES(GETDATE())
+End
+
+CREATE TRIGGER T3 ON Faculty FOR UPDATE,INSERT,DELETE AS 
+Begin
+INSERT INTO AUDITING VALUES(GETDATE())
+End
+
+--Question2
+ALTER TABLE AUDITING ADD DESCRIPTION_TABLE VARCHAR(45)
+
+ALTER TRIGGER T1 ON Student FOR UPDATE,INSERT,DELETE AS 
+BEGIN 
+INSERT INTO AUDITING VALUES(GETDATE(),'Student')
+END
+
+ALTER TRIGGER T2 ON Department FOR UPDATE,INSERT,DELETE AS
+BEGIN
+INSERT INTO AUDITING VALUES(GETDATE(),'Dept')
+END
+
+ALTER TRIGGER T3 ON Faculty FOR UPDATE,INSERT,DELETE AS
+BEGIN
+INSERT INTO AUDITING VALUES(GETDATE(),'Faculty')
+END
+
+--Question3
+CREATE VIEW VIEW_1 AS
+SELECT [Section].section_id,[Section].capacity,[Course].course_id,[Course].name,[Course].credit_hrs,[Course].dept_id 
+FROM [Course] 
+JOIN Section 
+ON [Section].course_id=[Course].course_id   
+
+CREATE TRIGGER T4 ON [Enrolled] INSTEAD OF INSERT AS 
+BEGIN
+SELECT * FROM VIEW_1
+END
+
+--Question4
+CREATE PROCEDURE p1 AS
+BEGIN
+SELECT * FROM View_1
+END
+
+--Question5
+CREATE TRIGGER T5 ON Department INSTEAD OF UPDATE,INSERT,DELETE AS
+BEGIN
+PRINT 'Sorry. You cannot do this'
+END
+GO
+
+--Question6
+GO
+CREATE TRIGGER T6 ON Database FOR Drop_Table, Alter_Table AS
+BEGIN
+PRINT 'Sorry you cannot do this'
+END

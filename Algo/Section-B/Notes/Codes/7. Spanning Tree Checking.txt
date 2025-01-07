@@ -1,0 +1,26 @@
+function isValidSpanningTree(graph, tree):
+    V = number of vertices in graph
+    if number of vertices in tree != V: return false
+    if number of edges in tree != V - 1: return false
+
+    visited = set()
+
+    // DFS to check connectivity and acyclicity
+    function DFS(v, parent):
+        add v to visited
+        for each neighbor in tree[v]:
+            if neighbor is not in visited:
+                if not DFS(neighbor, v):
+                    return false
+            elseif neighbor != parent:
+                // Found a cycle
+                return false
+        return true
+
+    // Start DFS from any vertex, here we choose vertex 0
+    if not DFS(0, -1): return false
+
+    // Check if all vertices were visited
+    if length(visited) != V: return false
+
+    return true

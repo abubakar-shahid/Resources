@@ -1,0 +1,24 @@
+function bucketSort(array, n):
+    // n is the number of buckets
+    buckets = array of size n
+
+    // Create empty buckets
+    for i from 0 to n - 1:
+        buckets[i] = empty list
+
+    // Distribute elements into buckets
+    for i from 0 to length(array) - 1:
+        index = getBucketIndex(array[i], n)
+        append array[i] to buckets[index]
+
+    // Sort each bucket and concatenate all buckets
+    sortedArray = empty list
+    for i from 0 to n - 1:
+        sort(buckets[i])  // You can use any sorting algorithm here
+        concatenate sortedArray with buckets[i]
+
+    return sortedArray
+
+function getBucketIndex(value, n):
+    // Return the bucket index for the given value
+    return int(value * n)

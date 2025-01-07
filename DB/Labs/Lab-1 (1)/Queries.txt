@@ -1,0 +1,19 @@
+Create Table Salesman(
+Salesman_id int,
+Name varchar(255),
+City varchar(255),
+Commission float
+)
+
+Create Table Workers(
+Worker_id int,
+Name varchar(255),
+City varchar(255),
+Salary float
+)
+-------------------------------------------------
+select * from Salesman;
+-------------------------------------------------
+alter table Salesman
+modify column Salesman_id to ID;
+-------------------------------------------------

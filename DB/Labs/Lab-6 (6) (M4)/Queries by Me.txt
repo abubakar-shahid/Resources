@@ -1,0 +1,56 @@
+----------------------------------------------------------------------(Printing All Data)----------------------------------------------------------------------
+select * from Users;
+select * from Following;
+select * from Hashtags;
+select * from UserInterests;
+select * from Interests;
+select * from Likes;
+select * from Tweets;
+-----------------------------------------------------------------------------(Queries)-----------------------------------------------------------------------------
+Task # 1   (InComplete)
+select FollowedUserName as UserName, count(FollowedUserName) as Followers from Following
+group by FollowedUserName order by FollowedUserName desc;
+
+Task # 2   (InComplete)
+select FollowedUserName as UserName, count(FollowedUserName) as Followers from Following
+group by FollowedUserName order by FollowedUserName desc;
+
+Task # 3
+select UserName from Users except
+(select UserName from Tweets group by UserName);
+
+Task # 4
+select Hashtag, UserName, count(*) numberOfTimes
+from (Tweets join Hashtags on charindex(Hashtags.Hashtag,Tweets.text) != 0)
+group by UserName, Hashtag;
+
+Task # 5
+select UserName from Tweets except
+(select UserName from Tweets where Text like '%#Census%');
+
+Task # 6
+select UserName from Users except
+(select FollowedUserName from Following group by FollowedUserName);
+
+Task # 7
+select Top 1 Description as Most_Common from
+Interests inner join UserInterests on UserInterests.InterestId = Interests.InterestID
+group by UserInterests.InterestId, Interests.Description order by count(UserInterests.InterestId) desc;
+select Top 1 Description as Most_Common from
+Interests inner join UserInterests on UserInterests.InterestId = Interests.InterestID
+group by UserInterests.InterestId, Interests.Description order by count(UserInterests.InterestId) asc;
+
+Task # 8
+select Users.Country, count(Tweets.UserName) as [Tweets per Country] from Users join Tweets
+on Users.UserName = Tweets.UserName
+group by Users.Country order by Users.Country asc;
+
+Task # 9
+select Tweets.UserName, count(Tweets.UserName) as Tweets from Tweets
+group by Tweets.UserName having count(Tweets.UserName)>
+(select avg(counts) from (select count(Tweets.UserName) as counts from Tweets group by Tweets.UserName) as T);
+
+Task # 10
+select distinct Following.FollowedUserName from Following
+join Users on Following.FollowerUserName = Users.UserName
+where Users.Country = 'Pakistan';

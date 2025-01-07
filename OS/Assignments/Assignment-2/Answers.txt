@@ -1,0 +1,116 @@
+(A-B) The code ensures that only one roommate enters their critical section at a time and prevents both from buying milk simultaneously. However, the code lacks
+proper synchronization mechanisms and doesn't guarantee fairness and bounded waiting. In certain situations, one of the roommates may have the opportunity to
+purchase milk repeatedly while the other is kept waiting indefinitely. Fairness is necessary to ensure that all processes have a chance to access the critical section.
+Although the code is designed to prevent simultaneous access to the critical section, it doesn't eliminate the possibility of race conditions entirely. The "NoteA"
+and "NoteB" flags are used to coordinate access, a race condition can occur when both are set to TRUE simultaneously and enter the critical section at the same time.
+This scenario requires an additional check to ensure mutual exclusion.
+
+(C) Following is the modified solution using locks or semaphores, that satisfy the three necessary conditions of the critical section problem:-
+
+// Synchronization primitives
+Semaphore mutex = 1;
+Semaphore roommatesReady = 0;
+
+// Roommate A
+while (true) {
+    // Enter the critical section
+    wait(mutex);
+    if (NoMilk) {
+        BuyMilk();
+    }
+    // Exit the critical section
+    signal(mutex);
+    // Signal that A is ready
+    signal(roommatesReady);
+}
+
+// Roommate B
+while (true) {
+    // Enter the critical section
+    wait(mutex);
+    if (NoMilk) {
+        BuyMilk();
+    }
+    // Exit the critical section
+    signal(mutex);
+    // Signal that B is ready
+    signal(roommatesReady);
+}
+
+In this solution, the roommates take turns buying milk, ensuring mutual exclusion. They also signal when they are done, which allows the other roommate to enter
+the critical section, addressing the issue of progress. Bounded waiting is satisfied as well, as roommates take turns and do not enter an infinite loop.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+The two code snippets you provided have a subtle difference in the placement of the `pthread_join` calls. This difference leads to different behaviors and outputs.
+Let's analyze each of them:
+
+1. With `pthread_join` inside the loop:
+
+Output:
+main: creating thread 000
+Hello world! Function calling, 000
+main: creating thread 001
+Hello world! Function calling, 001
+main: creating thread 002
+Hello world! Function calling, 002
+main: creating thread 003
+Hello world! Function calling, 003
+main: creating thread 004
+Hello world! Function calling, 004
+main: creating thread 005
+Hello world! Function calling, 005
+main: creating thread 006
+Hello world! Function calling, 006
+main: creating thread 007
+Hello world! Function calling, 007
+
+Justification: In this code, you create a thread and immediately wait for it to finish using `pthread_join` inside the loop. As a result, each thread is created and joins
+before the next thread is created. This means that all threads run sequentially in the order they are created, and you see the "Hello world!" messages from each
+thread in the order of creation.
+
+2. With `pthread_join` outside the loop:
+
+Output:
+main: creating thread 000
+main: creating thread 001
+main: creating thread 002
+main: creating thread 003
+main: creating thread 004
+main: creating thread 005
+main: creating thread 006
+main: creating thread 007
+Hello world! Function calling, 000
+Hello world! Function calling, 001
+Hello world! Function calling, 002
+Hello world! Function calling, 003
+Hello world! Function calling, 004
+Hello world! Function calling, 005
+Hello world! Function calling, 006
+Hello world! Function calling, 007
+
+Justification: In this code, you create all threads in the first loop and then wait for each of them to complete in the second loop. This allows all threads to start
+executing concurrently. However, the `pthread_join` calls in the second loop make the main thread wait for each thread to complete before proceeding. As a result,
+the "Hello world!" messages appear in a random order as threads execute concurrently but finish in the order they were joined.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+A- Let's analyze whether the provided solution satisfies the necessary or optional requirements of the critical section problem conditions:
+
+1. Mutual Exclusion: Yes, the solution satisfies mutual exclusion. The use of the `test-and-set` operation and the `lock` variable ensures that only one process can enter
+the critical section at a time.
+
+2. Progress: The solution also satisfies progress. When a process is waiting for the critical section and another process is inside the critical section, the waiting process
+ will keep trying to acquire the lock. Eventually, it will succeed when the process inside the critical section leaves, ensuring progress.
+
+3. Bounded Waiting: The solution satisfies bounded waiting. The while loop in lines 10 ensures that processes waiting for the critical section will be granted access in
+a round-robin fashion. This guarantees that no process will be starved indefinitely.
+
+So, the solution satisfies all three necessary conditions of the critical section problem.
+
+B- The purpose of the while loop in line 6 is to implement busy-waiting, also known as spin-lock. This loop is used to acquire the lock using the `test-and-set`
+operation. The loop continues to check the `lock` until it successfully sets the `lock` to TRUE (indicating that the process has acquired the lock) and `waiting[i]` is
+FALSE (indicating that the process is not already in the queue to enter the critical section).
+
+C- The purpose of the while loop in line 10 is to implement the logic for selecting the next process to enter the critical section. This loop searches for the next
+process (represented by `j`) in a round-robin fashion. It ensures that the processes waiting for the critical section are granted access in a fair manner and that no
+process is starved. The loop continues until it finds a process that is waiting (i.e., `waiting[j]` is TRUE), and when it finds such a process, it allows it to proceed into
+the critical section. If it doesn't find any waiting process (all `waiting[j]` are FALSE), it releases the lock (`lock = FALSE`) to allow other processes to try to enter the
+critical section.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

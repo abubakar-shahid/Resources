@@ -1,0 +1,1 @@
+select distinct JOB from Employees;

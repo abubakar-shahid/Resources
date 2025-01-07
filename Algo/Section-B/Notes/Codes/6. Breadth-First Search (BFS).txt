@@ -1,0 +1,13 @@
+function BFS(graph, start):
+    visited = empty set
+    queue = empty queue
+    enqueue queue with start
+    add start to visited
+
+    while queue is not empty:
+        vertex = dequeue queue
+        visit(vertex)
+        for each neighbor of vertex in graph:
+            if neighbor is not in visited:
+                add neighbor to visited
+                enqueue queue with neighbor

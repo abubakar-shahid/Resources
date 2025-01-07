@@ -1,0 +1,64 @@
+--Create table Departments(
+--Dept_id int primary key,
+--dept_name varchar(20),
+--Dept_loc varchar(20)
+--);
+--Create table Employees(
+--Emp_id numeric(4) not null,
+--First_name varchar(10),
+--last_name varchar(10),
+--job_name varchar(9),
+--Mgr_name varchar(4),
+--Hire_date date,
+--salary numeric not null,
+--comm_pct numeric(7,2),
+--Dept_id int foreign key references Departments(Dept_id));
+
+---- Insert 5 tuples into the Departments table
+--INSERT INTO Departments (Dept_id, dept_name, Dept_loc)
+--VALUES 
+--  (1, 'Sales', 'New York'),
+--  (2, 'Marketing', 'Chicago'),
+--  (3, 'Finance', 'Los Angeles'),
+--  (4, 'Human Resources', 'Seattle'),
+--  (5, 'IT', 'San Francisco');
+
+-- Insert 5 tuples into the Employees table
+--INSERT INTO Employees (Emp_id, First_name, last_name, job_name, Mgr_name, Hire_date, salary, comm_pct, Dept_id)
+--VALUES
+--  (1, 'John', 'Doe', 'Manager', null, '2022-01-01', 80000, null, 1),
+--  (2, 'Jane', 'Smith', 'Salesperson', 'John', '2022-02-01', 50000, 0.1, 1),
+--  (3, 'Bob', 'Johnson', 'Coordinator', 'John', '2022-03-01', 45000, 0.05, 2),
+--  (4, 'Sara', 'Lee', 'F_Analyst', 'John', '2022-04-01', 55000, null, 3),
+--  (5, 'Mike', 'Miller', 'IT S', 'John', '2022-05-01', 60000, null, 5);
+--insert into departments values('10','R_engineer','Pakistan');
+---------------------------------------------------------------
+--1
+--SELECT D.Dept_id, D.dept_name
+--FROM Departments D 
+--WHERE D.Dept_id <> 10 AND
+--      (SELECT MIN(E.salary) FROM Employees E WHERE E.Dept_id = D.Dept_id) >
+--      (SELECT MAX(E.salary) FROM Employees E WHERE E.Dept_id = 10);
+-----------------------------------------------------------
+----2
+--select * from employees where salary=Any(select salary from employees where Dept_id=10) and  Dept_id<>10;
+----3
+--select * from employees where salary>Any(select salary from employees where Dept_id=10) and  Dept_id<>10
+----4
+--select * from employees where salary<All(select salary from employees where Dept_id=10) and  Dept_id<>10;
+--5
+ --select *from employees where Mgr_name=any(Select Mgr_name from employees where Emp_id in('200','121'))
+ --and Dept_id=any(Select Dept_id from employees where Emp_id in ('200','121')); 
+--6
+--select Departments.dept_name from Departments inner join Employees 
+--on Employees.Dept_id=Departments.Dept_id and Employees.Emp_id=200;
+--7
+--select max(salary) from Employees where job_name ='SE_Rep';
+---8
+--select job_name from Employees where Emp_id<>0 group by(job_name) having count(Emp_id)>=1
+---9
+--select job_name from Employees where  (Emp_id)=0 group by(job_name) 
+--10
+ --select top 1 salary from employees where salary in(select top 3 salary from employees order by salary desc) order by salary;
+select *from departments;
+select *from employees;
